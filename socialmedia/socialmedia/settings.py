@@ -19,7 +19,7 @@ ALLOWED_HOSTS = [
     host.strip()
     for host in os.environ.get(
         'DJANGO_ALLOWED_HOSTS',
-        '127.0.0.1,localhost,testserver'
+        '127.0.0.1,localhost,testserver,.onrender.com'
     ).split(',')
     if host.strip()
 ]
@@ -128,7 +128,10 @@ STORAGES = {
 
 CSRF_TRUSTED_ORIGINS = [
     origin.strip()
-    for origin in os.environ.get('DJANGO_CSRF_TRUSTED_ORIGINS', '').split(',')
+    for origin in os.environ.get(
+        'DJANGO_CSRF_TRUSTED_ORIGINS',
+        'https://*.onrender.com'
+    ).split(',')
     if origin.strip()
 ]
 
