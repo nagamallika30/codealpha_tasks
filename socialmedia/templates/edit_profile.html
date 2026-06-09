@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Profile | SocialApp{% endblock %}
+
+{% block styles %}
+<style>
+    .edit-layout {
+        align-items: start;
+        display: grid;
+        gap: 22px;
+        grid-template-columns: 320px minmax(0, 1fr);
+    }
+
+    .preview {
+        text-align: center;
+    }
+
+    .preview .avatar {
+        height: 128px;
+        margin-bottom: 14px;
+        width: 128px;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+    }
+
+    @media (max-width: 760px) {
+        .edit-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .form-actions .button,
+        .form-actions button {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<main class="page stack">
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div>
+        <p class="eyebrow">Account Studio</p>
+        <h1>Edit profile</h1>
+    </div>
+
+    <div class="edit-layout">
+        <aside class="card preview">
+            <img class="avatar" src="{{ profile.avatar_url }}" alt="{{ request.user.username }} profile picture">
+            <h2>{{ request.user.username }}</h2>
+            <p class="muted">Update your bio and profile image to make your page stand out.</p>
+        </aside>
+
+        <section class="card">
+            <form class="stack" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div>
+                    <label for="{{ form.headline.id_for_label }}">Headline</label>
+                    {{ form.headline }}
+                </div>
+
+                <div>
+                    <label for="{{ form.bio.id_for_label }}">Bio</label>
+                    {{ form.bio }}
+                </div>
+
+                <div>
+                    <label for="{{ form.location.id_for_label }}">Location</label>
+                    {{ form.location }}
+                </div>
+
+                <div>
+                    <label for="{{ form.website.id_for_label }}">Website</label>
+                    {{ form.website }}
+                </div>
+
+                <div>
+                    <label for="{{ form.skills.id_for_label }}">Skills</label>
+                    {{ form.skills }}
+                </div>
+
+                <div>
+                    <label for="{{ form.profile_pic.id_for_label }}">Profile Picture</label>
+                    {{ form.profile_pic }}
+                </div>
+
+                <div class="form-actions">
+                    <a class="button secondary" href="{% url 'profile' request.user.username %}">Cancel</a>
+                    <button class="primary" type="submit">Save Changes</button>
+                </div>
+            </form>
+        </section>
+    </div>
+</main>
+{% endblock %}

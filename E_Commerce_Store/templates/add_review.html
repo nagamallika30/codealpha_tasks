@@ -1,0 +1,13 @@
+<h2>Add Review for {{ product.name }}</h2>
+
+<form method="POST">
+    {% csrf_token %}
+
+    <input type="number" name="rating" placeholder="Rating (1-5)" required>
+    <br><br>
+
+    <textarea name="comment" placeholder="Write review..." required></textarea>
+    <br><br>
+
+    <button type="submit">Submit Review</button>
+</form>

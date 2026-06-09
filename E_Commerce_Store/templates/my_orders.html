@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>My Orders</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: #f4f6f9;
+            color: #111;
+        }
+
+        /* HEADER */
+        h1 {
+            text-align: center;
+            padding: 25px;
+            font-size: 28px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        /* GRID */
+        .orders-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 20px 40px 50px;
+        }
+
+        /* CARD */
+        .order-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            transition: 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .order-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 18px 40px rgba(0,0,0,0.15);
+        }
+
+        /* TOP COLOR BAR */
+        .order-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 5px;
+            width: 100%;
+            background: linear-gradient(90deg, #2874f0, #00c6ff);
+        }
+
+        /* ORDER ID */
+        .order-id {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        /* PRICE */
+        .total {
+            font-size: 20px;
+            font-weight: 700;
+            color: #16a34a;
+            margin: 10px 0;
+        }
+
+        /* DATE */
+        .date {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        /* EMPTY STATE */
+        .empty {
+            text-align: center;
+            padding: 50px;
+            color: #6b7280;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>📦 My Orders</h1>
+
+{% if orders %}
+
+<div class="orders-container">
+
+    {% for order in orders %}
+
+    <div class="order-card">
+
+        <div class="order-id">
+            Order #{{ order.id }}
+        </div>
+
+        <div class="total">
+            ₹{{ order.total_price }}
+        </div>
+
+        <div class="date">
+            {{ order.created_at }}
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% else %}
+
+<div class="empty">
+    <h2>No orders yet 🛒</h2>
+    <p>Start shopping to see your orders here</p>
+</div>
+
+{% endif %}
+
+</body>
+
+</html>

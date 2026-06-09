@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Register | SocialApp{% endblock %}
+
+{% block styles %}
+<style>
+    .auth-card h1 {
+        font-size: 34px;
+        margin-top: 6px;
+    }
+
+    .auth-note {
+        background: var(--panel-soft);
+        border: 1px solid #edf2f7;
+        border-radius: 8px;
+        padding: 14px;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<main class="auth-page">
+    <section class="auth-card stack">
+        <div>
+            <p class="eyebrow">Start Your Network</p>
+            <h1>Create account</h1>
+            <p class="muted">Build a profile, share posts, upload photos, and discover people.</p>
+        </div>
+
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form class="stack" method="POST">
+            {% csrf_token %}
+            <div>
+                <label for="username">Username</label>
+                <input id="username" type="text" name="username" autocomplete="username" required>
+            </div>
+            <div>
+                <label for="password">Password</label>
+                <input id="password" type="password" name="password" autocomplete="new-password" required>
+            </div>
+            <button class="primary" type="submit">Register</button>
+        </form>
+
+        <div class="auth-note">
+            <p class="muted">
+                Already registered?
+                <a href="{% url 'login' %}"><strong>Login instead</strong></a>
+            </p>
+        </div>
+    </section>
+</main>
+{% endblock %}

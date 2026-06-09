@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block title %}Search | SocialApp{% endblock %}
+
+{% block styles %}
+<style>
+    .search-panel form {
+        display: flex;
+        gap: 10px;
+    }
+
+    .results {
+        display: grid;
+        gap: 14px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .result {
+        align-items: center;
+        display: flex;
+        gap: 14px;
+        justify-content: space-between;
+    }
+
+    .result-main {
+        align-items: center;
+        display: flex;
+        gap: 12px;
+        min-width: 0;
+    }
+
+    .result .avatar {
+        height: 54px;
+        width: 54px;
+    }
+
+    @media (max-width: 760px) {
+        .search-panel form,
+        .result {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .results {
+            grid-template-columns: 1fr;
+        }
+
+        .result .button {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<main class="page stack">
+    <section class="card search-panel stack">
+        <div>
+            <p class="eyebrow">People Directory</p>
+            <h1>Find profiles</h1>
+        </div>
+        <form method="GET" action="{% url 'search_users' %}">
+            <input type="search" name="q" placeholder="Search by username or name" value="{{ query }}">
+            <button class="primary" type="submit">Search</button>
+        </form>
+    </section>
+
+    {% if query %}
+        <section class="stack">
+            <h2>Results for "{{ query }}"</h2>
+            <div class="results">
+                {% for user in users %}
+                    <article class="card result">
+                        <a class="result-main" href="{% url 'profile' user.username %}">
+                            <img class="avatar" src="{{ user.profile.avatar_url }}" alt="{{ user.username }} profile picture">
+                            <div>
+                                <strong>{{ user.username }}</strong>
+                                {% if user.profile.headline %}
+                                    <p class="muted">{{ user.profile.headline|truncatechars:70 }}</p>
+                                {% elif user.profile.bio %}
+                                    <p class="muted">{{ user.profile.bio|truncatechars:70 }}</p>
+                                {% else %}
+                                    <p class="muted">Profile ready to view</p>
+                                {% endif %}
+                            </div>
+                        </a>
+                        <a class="button secondary" href="{% url 'profile' user.username %}">View</a>
+                    </article>
+                {% empty %}
+                    <div class="card">
+                        <p class="muted">No users matched that search.</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    {% endif %}
+</main>
+{% endblock %}

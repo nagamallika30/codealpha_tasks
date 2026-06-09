@@ -1,0 +1,385 @@
+{% extends 'base.html' %}
+
+{% block title %}Feed | SocialApp{% endblock %}
+
+{% block styles %}
+<style>
+    .composer {
+        display: flex;
+        gap: 14px;
+    }
+
+    .composer .avatar {
+        height: 52px;
+        width: 52px;
+    }
+
+    .composer form {
+        flex: 1;
+    }
+
+    .composer-actions {
+        align-items: center;
+        display: flex;
+        gap: 12px;
+        justify-content: space-between;
+        margin-top: 12px;
+    }
+
+    .section-title {
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .section-title h1 {
+        font-size: 28px;
+    }
+
+    .post {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .post-header {
+        align-items: center;
+        display: flex;
+        gap: 12px;
+        justify-content: space-between;
+    }
+
+    .post-author {
+        align-items: center;
+        display: flex;
+        gap: 12px;
+        min-width: 0;
+    }
+
+    .post-author .avatar {
+        height: 50px;
+        width: 50px;
+    }
+
+    .post-user {
+        font-weight: 900;
+    }
+
+    .post-time {
+        color: var(--muted);
+        font-size: 13px;
+        margin-top: 3px;
+    }
+
+    .post-content {
+        font-size: 16px;
+        line-height: 1.7;
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+
+    .post-image {
+        aspect-ratio: 16 / 10;
+        border-radius: 8px;
+        object-fit: cover;
+        width: 100%;
+    }
+
+    .post-actions {
+        align-items: center;
+        border-top: 1px solid var(--line);
+        display: flex;
+        gap: 10px;
+        justify-content: space-between;
+        padding-top: 14px;
+    }
+
+    .like-btn {
+        background: #eef6ff;
+        color: var(--brand-dark);
+        min-width: 92px;
+    }
+
+    .like-btn.liked {
+        background: #fff1f2;
+        color: #be123c;
+    }
+
+    .comment-form {
+        display: flex;
+        gap: 10px;
+    }
+
+    .comments {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .comment {
+        background: var(--panel-soft);
+        border: 1px solid #edf2f7;
+        border-radius: 8px;
+        line-height: 1.5;
+        padding: 10px 12px;
+        word-break: break-word;
+    }
+
+    .sidebar {
+        position: sticky;
+        top: 92px;
+    }
+
+    .stats {
+        display: grid;
+        gap: 10px;
+        grid-template-columns: repeat(3, 1fr);
+        text-align: center;
+    }
+
+    .stat {
+        background: var(--panel-soft);
+        border: 1px solid #edf2f7;
+        border-radius: 8px;
+        padding: 14px 8px;
+    }
+
+    .stat strong {
+        display: block;
+        font-size: 24px;
+        margin-bottom: 4px;
+    }
+
+    .suggestion {
+        align-items: center;
+        display: flex;
+        gap: 12px;
+        justify-content: space-between;
+    }
+
+    .suggestion-main {
+        align-items: center;
+        display: flex;
+        gap: 10px;
+        min-width: 0;
+    }
+
+    .suggestion .avatar {
+        height: 42px;
+        width: 42px;
+    }
+
+    .empty-state {
+        text-align: center;
+    }
+
+    @media (max-width: 640px) {
+        .composer {
+            flex-direction: column;
+        }
+
+        .composer-actions,
+        .post-actions,
+        .comment-form {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .comment-form button,
+        .post-actions .button,
+        .post-actions form,
+        .post-actions button {
+            width: 100%;
+        }
+
+        .stats {
+            grid-template-columns: 1fr;
+        }
+
+        .sidebar {
+            position: static;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<main class="page">
+    <div class="feed-shell">
+        <section class="stack">
+            {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                        <div class="message {{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="card composer">
+                <img class="avatar" src="{{ request.user.profile.avatar_url }}" alt="{{ request.user.username }} profile picture">
+                <form method="POST" action="{% url 'create_post' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <label for="post-content">Create something new</label>
+                    <textarea id="post-content" name="content" placeholder="Share an update, achievement, thought, or photo."></textarea>
+                    <div class="composer-actions">
+                        <input type="file" name="image" accept="image/*">
+                        <button class="primary" type="submit">Publish</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="section-title">
+                <div>
+                    <p class="eyebrow">Live Feed</p>
+                    <h1>Latest posts</h1>
+                </div>
+            </div>
+
+            {% for post in posts %}
+                <article class="card post">
+                    <header class="post-header">
+                        <div class="post-author">
+                            <img class="avatar" src="{{ post.user.profile.avatar_url }}" alt="{{ post.user.username }} profile picture">
+                            <div>
+                                <a class="post-user" href="{% url 'profile' post.user.username %}">{{ post.user.username }}</a>
+                                <div class="post-time">{{ post.created_at|date:"M j, Y g:i A" }}</div>
+                            </div>
+                        </div>
+                    </header>
+
+                    {% if post.content %}
+                        <p class="post-content">{{ post.content }}</p>
+                    {% endif %}
+
+                    {% if post.image %}
+                        <img class="post-image" src="{{ post.image.url }}" alt="Post image from {{ post.user.username }}">
+                    {% endif %}
+
+                    <div class="post-actions">
+                        <button
+                            class="like-btn {% if request.user in post.likes.all %}liked{% endif %}"
+                            type="button"
+                            data-post="{{ post.id }}"
+                            aria-label="Like post"
+                        >
+                            <span class="heart">{% if request.user in post.likes.all %}Liked{% else %}Like{% endif %}</span>
+                            <span class="like-count">{{ post.likes.count }}</span>
+                        </button>
+
+                        <div class="cluster">
+                            <a class="button ghost" href="{% url 'profile' post.user.username %}">View Profile</a>
+                            {% if post.user == request.user %}
+                                <form method="POST" action="{% url 'delete_post' post.id %}">
+                                    {% csrf_token %}
+                                    <button class="danger" type="submit">Delete</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <form class="comment-form" method="POST" action="{% url 'add_comment' post.id %}">
+                        {% csrf_token %}
+                        <input type="text" name="text" placeholder="Write a thoughtful comment">
+                        <button type="submit">Comment</button>
+                    </form>
+
+                    <div class="comments">
+                        {% for comment in post.comment_set.all %}
+                            <div class="comment">
+                                <strong>{{ comment.user.username }}</strong>: {{ comment.text }}
+                            </div>
+                        {% empty %}
+                            <div class="comment muted">No comments yet. Start the conversation.</div>
+                        {% endfor %}
+                    </div>
+                </article>
+            {% empty %}
+                <section class="card empty-state stack">
+                    <h2>No posts yet</h2>
+                    <p class="muted">Create the first post to start the feed.</p>
+                </section>
+            {% endfor %}
+        </section>
+
+        <aside class="stack sidebar">
+            <section class="card stack">
+                <div>
+                    <p class="eyebrow">Your Snapshot</p>
+                    <h2>{{ request.user.username }}</h2>
+                </div>
+                <div class="stats">
+                    <div class="stat">
+                        <strong>{{ posts_count }}</strong>
+                        <span class="muted">Posts</span>
+                    </div>
+                    <div class="stat">
+                        <strong>{{ followers_count }}</strong>
+                        <span class="muted">Followers</span>
+                    </div>
+                    <div class="stat">
+                        <strong>{{ following_count }}</strong>
+                        <span class="muted">Following</span>
+                    </div>
+                </div>
+                <a class="button secondary" href="{% url 'edit_profile' %}">Edit Profile</a>
+            </section>
+
+            <section class="card stack">
+                <div>
+                    <p class="eyebrow">Discover</p>
+                    <h2>People to follow</h2>
+                </div>
+
+                {% for user in suggestions %}
+                    <div class="suggestion">
+                        <a class="suggestion-main" href="{% url 'profile' user.username %}">
+                            <img class="avatar" src="{{ user.profile.avatar_url }}" alt="{{ user.username }} profile picture">
+                            <span><strong>{{ user.username }}</strong></span>
+                        </a>
+                        <form method="POST" action="{% url 'follow_user' user.username %}">
+                            {% csrf_token %}
+                            <button class="secondary" type="submit">Follow</button>
+                        </form>
+                    </div>
+                {% empty %}
+                    <p class="muted">No suggestions yet. Try searching for people.</p>
+                {% endfor %}
+            </section>
+        </aside>
+    </div>
+</main>
+
+<script>
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+
+    if (parts.length === 2) {
+        return parts.pop().split(';').shift();
+    }
+
+    return '';
+}
+
+document.querySelectorAll('.like-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+        const postId = btn.dataset.post;
+        const heart = btn.querySelector('.heart');
+        const count = btn.querySelector('.like-count');
+
+        fetch(`/like/${postId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                count.textContent = data.likes;
+                btn.classList.toggle('liked', data.liked);
+                heart.textContent = data.liked ? 'Liked' : 'Like';
+            });
+    });
+});
+</script>
+{% endblock %}

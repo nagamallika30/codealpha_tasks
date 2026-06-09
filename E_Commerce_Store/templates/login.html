@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Login</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            /* MODERN BACKGROUND */
+            background: radial-gradient(circle at top left, #1f2937, #0f172a);
+            overflow: hidden;
+        }
+
+        /* floating glow shapes */
+        body::before,
+        body::after {
+            content: "";
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: #3b82f6;
+            filter: blur(120px);
+            opacity: 0.3;
+            border-radius: 50%;
+            animation: floatGlow 6s infinite alternate;
+        }
+
+        body::after {
+            background: #ec4899;
+            bottom: 10%;
+            right: 10%;
+        }
+
+        body::before {
+            top: 10%;
+            left: 10%;
+        }
+
+        @keyframes floatGlow {
+            from { transform: translateY(0px); }
+            to { transform: translateY(30px); }
+        }
+
+        /* LOGIN CARD */
+        .login-box {
+            width: 360px;
+            padding: 40px;
+            border-radius: 18px;
+
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(16px);
+
+            border: 1px solid rgba(255, 255, 255, 0.15);
+
+            box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+
+            text-align: center;
+
+            animation: pop 0.6s ease;
+            z-index: 2;
+        }
+
+        @keyframes pop {
+            from {
+                transform: scale(0.85);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        h2 {
+            color: #ffffff;
+            margin-bottom: 25px;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.2);
+
+            background: rgba(255,255,255,0.05);
+            color: white;
+
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+
+        input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+        }
+
+       button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 12px;
+
+            border: none;
+            border-radius: 10px;
+
+            background: linear-gradient(135deg, #6366f1, #ec4899);
+            color: white;
+
+            font-weight: 600;
+            cursor: pointer;
+
+            transition: 0.3s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(99,102,241,0.4);
+        }
+
+        a {
+            display: block;
+            margin-top: 18px;
+            color: #93c5fd;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        a:hover {
+            color: white;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="login-box">
+
+    <h2>Welcome Back</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <input type="text" name="username" placeholder="Username" required>
+
+        <input type="password" name="password" placeholder="Password" required>
+
+        <button type="submit">Login</button>
+    </form>
+
+    <a href="/users/register/">Register</a>
+
+</div>
+
+</body>
+
+</html>

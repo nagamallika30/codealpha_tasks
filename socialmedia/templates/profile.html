@@ -1,0 +1,251 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ profile.user.username }} | SocialApp{% endblock %}
+
+{% block styles %}
+<style>
+    .profile-hero {
+        overflow: hidden;
+        padding: 0;
+    }
+
+    .cover {
+        background: linear-gradient(135deg, #1f6feb 0%, #14b8a6 52%, #f97316 100%);
+        height: 150px;
+    }
+
+    .profile-body {
+        align-items: flex-end;
+        display: flex;
+        gap: 20px;
+        justify-content: space-between;
+        padding: 0 24px 24px;
+    }
+
+    .profile-main {
+        align-items: flex-end;
+        display: flex;
+        gap: 18px;
+        margin-top: -54px;
+        min-width: 0;
+    }
+
+    .profile-avatar {
+        border: 5px solid #ffffff;
+        border-radius: 50%;
+        box-shadow: 0 16px 34px rgba(23, 32, 51, 0.16);
+        height: 118px;
+        object-fit: cover;
+        width: 118px;
+    }
+
+    .profile-name {
+        font-size: 32px;
+        line-height: 1.1;
+    }
+
+    .profile-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
+    }
+
+    .pill {
+        background: #eef6ff;
+        border: 1px solid #dbeafe;
+        border-radius: 999px;
+        color: #174ea6;
+        display: inline-flex;
+        font-size: 13px;
+        font-weight: 800;
+        padding: 7px 10px;
+    }
+
+    .profile-columns {
+        align-items: start;
+        display: grid;
+        gap: 18px;
+        grid-template-columns: 320px minmax(0, 1fr);
+    }
+
+    .stats {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .stat {
+        background: var(--panel-soft);
+        border: 1px solid #edf2f7;
+        border-radius: 8px;
+        padding: 16px;
+        text-align: center;
+    }
+
+    .stat strong {
+        display: block;
+        font-size: 26px;
+        margin-bottom: 4px;
+    }
+
+    .post-grid {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .profile-post {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .post-content {
+        line-height: 1.6;
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+
+    .post-image {
+        aspect-ratio: 4 / 3;
+        border-radius: 8px;
+        object-fit: cover;
+        width: 100%;
+    }
+
+    @media (max-width: 760px) {
+        .profile-body,
+        .profile-main {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .profile-body {
+            padding: 0 18px 20px;
+        }
+
+        .profile-actions,
+        .profile-actions form,
+        .profile-actions .button,
+        .profile-actions button {
+            width: 100%;
+        }
+
+        .stats,
+        .post-grid,
+        .profile-columns {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<main class="page stack">
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <section class="card profile-hero">
+        <div class="cover"></div>
+        <div class="profile-body">
+            <div class="profile-main">
+                <img class="profile-avatar" src="{{ profile.avatar_url }}" alt="{{ profile.user.username }} profile picture">
+
+                <div>
+                    <p class="eyebrow">Member Profile</p>
+                    <h1 class="profile-name">{{ profile.user.username }}</h1>
+                    {% if profile.headline %}
+                        <h2>{{ profile.headline }}</h2>
+                    {% endif %}
+                    {% if profile.bio %}
+                        <p class="muted">{{ profile.bio }}</p>
+                    {% else %}
+                        <p class="muted">This profile is ready for a bio.</p>
+                    {% endif %}
+                    <div class="profile-meta">
+                        {% if profile.location %}
+                            <span class="pill">{{ profile.location }}</span>
+                        {% endif %}
+                        {% if profile.website %}
+                            <a class="pill" href="{{ profile.website }}" target="_blank" rel="noreferrer">Portfolio</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="cluster profile-actions">
+                {% if request.user == profile.user %}
+                    <a class="button primary" href="{% url 'edit_profile' %}">Edit Profile</a>
+                    <a class="button secondary" href="{% url 'home' %}">Back to Feed</a>
+                {% else %}
+                    <form method="POST" action="{% url 'follow_user' profile.user.username %}">
+                        {% csrf_token %}
+                        <button class="primary" type="submit">{% if is_following %}Unfollow{% else %}Follow{% endif %}</button>
+                    </form>
+                    <a class="button secondary" href="{% url 'home' %}">Back to Feed</a>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <section class="stats">
+        <div class="stat">
+            <strong>{{ posts_count }}</strong>
+            <span class="muted">Posts</span>
+        </div>
+        <div class="stat">
+            <strong>{{ followers_count }}</strong>
+            <span class="muted">Followers</span>
+        </div>
+        <div class="stat">
+            <strong>{{ following_count }}</strong>
+            <span class="muted">Following</span>
+        </div>
+    </section>
+
+    <div class="profile-columns">
+        <aside class="card stack">
+            <div>
+                <p class="eyebrow">About</p>
+                <h2>Profile details</h2>
+            </div>
+            <p class="muted">{{ profile.bio|default:"No bio added yet." }}</p>
+            <div>
+                <strong>Skills</strong>
+                <p class="muted">{{ profile.skills|default:"No skills added yet." }}</p>
+            </div>
+        </aside>
+
+        <section class="stack">
+            <div>
+                <p class="eyebrow">Timeline</p>
+                <h2>Recent posts</h2>
+            </div>
+
+            <div class="post-grid">
+                {% for post in posts %}
+                    <article class="card profile-post">
+                        {% if post.image %}
+                            <img class="post-image" src="{{ post.image.url }}" alt="Post image from {{ profile.user.username }}">
+                        {% endif %}
+                        {% if post.content %}
+                            <p class="post-content">{{ post.content }}</p>
+                        {% endif %}
+                        <p class="muted">{{ post.created_at|date:"M j, Y g:i A" }}</p>
+                    </article>
+                {% empty %}
+                    <div class="card">
+                        <p class="muted">No posts yet.</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+</main>
+{% endblock %}

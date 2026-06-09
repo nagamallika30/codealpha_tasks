@@ -1,0 +1,7 @@
+backend/venv/
+backend/data/*.json
+backend/*.log
+node_modules/
+.env
+.DS_Store
+Thumbs.db

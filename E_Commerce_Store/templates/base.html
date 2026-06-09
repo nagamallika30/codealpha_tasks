@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ShopSphere</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+            background: #f4f6f8;
+        }
+
+        .navbar {
+            background: #2874f0;
+            padding: 15px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar a {
+            color: white;
+            margin: 0 10px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+    </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+
+    <div>
+        <a href="/">Home</a>
+        <a href="{% url 'cart_page' %}">Cart 🛒 ({{ cart_count }})</a>
+        <a href="/wishlist/">Wishlist ❤️</a>
+        <a href="/orders/my-orders/">Orders</a>
+    </div>
+
+    <div>
+        👤 {{ user.username }}
+    </div>
+
+</div>
+
+<!-- PAGE CONTENT -->
+<div class="container">
+
+    {% block content %}
+    {% endblock %}
+
+</div>
+
+</body>
+</html>

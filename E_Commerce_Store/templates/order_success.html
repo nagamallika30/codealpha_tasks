@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Order Success</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #e0f2ff, #f5f7ff);
+        }
+
+        /* CARD */
+        .box {
+            background: white;
+            padding: 40px 35px;
+            width: 420px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+            animation: pop 0.6s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* TOP GRADIENT BAR */
+        .box::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 6px;
+            width: 100%;
+            background: linear-gradient(90deg, #2874f0, #00c6ff);
+        }
+
+        /* ANIMATION */
+        @keyframes pop {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* SUCCESS ICON */
+        .success {
+            font-size: 60px;
+            animation: bounce 1s infinite alternate;
+        }
+
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-8px); }
+        }
+
+        h2 {
+            margin-top: 10px;
+            font-size: 22px;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        p {
+            margin-top: 10px;
+            font-size: 15px;
+            color: #4b5563;
+        }
+
+        /* ORDER INFO */
+        .info {
+            margin-top: 20px;
+            background: #f3f6ff;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: left;
+        }
+
+        .info p {
+            margin: 6px 0;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        /* BUTTON */
+        .btn {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 12px 18px;
+            background: linear-gradient(135deg, #2874f0, #1a5ed8);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: 0.3s;
+            box-shadow: 0 10px 25px rgba(40,116,240,0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(40,116,240,0.4);
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div class="box">
+
+    <div class="success">🎉</div>
+
+    <h2>Order Placed Successfully!</h2>
+
+    <p>Your order has been confirmed and is being processed.</p>
+
+    <div class="info">
+        <p>🆔 Order ID: {{ order.id }}</p>
+        <p>💰 Total: ₹{{ order.total_price }}</p>
+    </div>
+
+    <a class="btn" href="/">
+        Continue Shopping
+    </a>
+
+</div>
+
+</body>
+
+</html>
