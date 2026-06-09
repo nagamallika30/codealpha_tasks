@@ -45,3 +45,20 @@ Demo login:
 - `GET /api/notifications`
 - `PATCH /api/notifications/:id/read`
 - `GET /ws?token=...`
+
+## Render Deployment
+
+This project is configured in the root `render.yaml` as:
+
+```text
+Service: codealpha-project-management-tool
+Root Directory: project_management_tool
+Build Command: npm install
+Start Command: npm start
+```
+
+Render provides the `PORT` environment variable automatically. The server reads that value and serves both the API and frontend from the same web service.
+
+## Notes
+
+Data is stored in `backend/data/db.json`. This is good for a demo deployment, but for production use, move persistence to a database or attach a Render persistent disk.

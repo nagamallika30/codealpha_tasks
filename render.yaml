@@ -1,0 +1,39 @@
+services:
+  - type: web
+    name: codealpha-ecommerce-store
+    runtime: python
+    rootDir: E_Commerce_Store
+    buildCommand: bash build.sh
+    startCommand: gunicorn backend.wsgi:application
+    envVars:
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: DJANGO_ALLOWED_HOSTS
+        value: ".onrender.com,localhost,127.0.0.1"
+      - key: DJANGO_CSRF_TRUSTED_ORIGINS
+        value: "https://*.onrender.com"
+
+  - type: web
+    name: codealpha-socialmedia
+    runtime: python
+    rootDir: socialmedia
+    buildCommand: bash build.sh
+    startCommand: gunicorn socialmedia.wsgi:application
+    envVars:
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: DJANGO_ALLOWED_HOSTS
+        value: ".onrender.com,localhost,127.0.0.1"
+      - key: DJANGO_CSRF_TRUSTED_ORIGINS
+        value: "https://*.onrender.com"
+
+  - type: web
+    name: codealpha-project-management-tool
+    runtime: node
+    rootDir: project_management_tool
+    buildCommand: npm install
+    startCommand: npm start
